@@ -9,9 +9,6 @@ export REBELS_SOFTWARE_DIR="$REBELS_ENV_DIR/software"
 
 cd $REBELS_ENV_DIR
 
-echo "REBELS: Updating scripts..."
-git pull
-
 echo "REBELS: Mounting drives..."
 
 alias rclone="$REBELS_SOFTWARE_DIR/rclone/rclone"

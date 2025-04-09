@@ -3,7 +3,7 @@ INSTALL_DIR=$HOME/.rebels
 USERNAME=$(whoami)
 
 echo "REBELS: Installing scripts in $HOme/.rebels"
-git clone git@github.com:cjhosken/ncca-lab-scripts.git $INSTALL_DIR
+git clone git@github.com:cjhosken/rebels-env.git $INSTALL_DIR
 
 cd $INSTALL_DIR
 git pull

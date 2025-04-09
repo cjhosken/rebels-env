@@ -7,9 +7,7 @@ echo "SYSTEM: Prepping user environment..."
 
 python3 -m pip install -r $REBELS_SOFTWARE_DIR/teteRex/requirements.txt
 python3 -m pip install -r $REBELS_SOFTWARE_DIR/splash/requirements.txt
-
-
-
+pip install --user sshfs
 
 echo "REBELS: Installing scripts in $HOME/.rebels"
 git clone git@github.com:cjhosken/rebels-env.git $INSTALL_DIR

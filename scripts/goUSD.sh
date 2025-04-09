@@ -8,7 +8,6 @@
 HERE=$(pwd)
 FILE=""
 
-
 for arg in "$@"; do
     case $arg in
         *)
@@ -16,9 +15,6 @@ for arg in "$@"; do
             ;;
     esac
 done
-
-# Custom OCIO Config from Jeremy Hardin
-# export OCIO=/public/bapublic/jhardin/tools/OCIO/BU_nov2024_config.ocio
 
 # LICENSE SERVERS
 export SESI_LMHOST=lepe.bournemouth.ac.uk
@@ -30,26 +26,28 @@ PYTHON_VERSION="python3.11"
 HTOA=$REBELS_PLUGIN_DIR/arnold/htoa/htoa-6.3.4.1
 export HOUDINI_DSO_ERROR=1
 
-# Houdiin Setup Script
+# Houdini Setup Script
 cd $HFS
 source houdini_setup_bash
-
-# Clear PYTHONPATH to avoid any issues
-PYTHONPATH=""
-
-# Default of HOUDINI_TEMP_DIR is on the root partition in /tmp so moving it to /transfer
-# Check if /transfer is mounted
-if ! mountpoint -q /transfer; then
-    echo "/transfer is not mounted. Using fallback path for HOUDINI_TEMP_DIR."
-else
-    export HOUDINI_TEMP_DIR=/transfer/houdini_temp
-fi
 
 ############################################
 # Plugins
 ############################################
 
 export HOUDINI_PATH=$HOUDINI_PATH:$HOME/houdini$HFS_VERSION:$HFS/houdini:/opt/sidefx_packages/SideFXLabs$HFS_VERSION:$HTOA
+
+# USD specific environment variables
+export PXR_PLUGINPATH_NAME="$HFS/usd/plugins:$HFS/plugin/usd"
+export LD_LIBRARY_PATH="$HFS/lib:$LD_LIBRARY_PATH"
+export PATH="$HFS/bin:$PATH"
+
+export HD_DEFAULT_RENDERER="GL"  # Force GL renderer if Storm fails
+
+# Clear problematic USD environment variables if they exist
+unset USDROOT
+unset USD_INSTALL_ROOT
+unset PYTHONPATH
+
 
 ############################################
 # Launching
@@ -58,6 +56,6 @@ export HOUDINI_PATH=$HOUDINI_PATH:$HOME/houdini$HFS_VERSION:$HFS/houdini:/opt/si
 # Change back to the original directory
 cd $HERE
 
-echo "REBELS: Starting Houdini from $HFS - this can take a few seconds..."
+echo "REBELS: Starting UsdView from $HFS - this can take a few seconds..."
 echo
-houdini $FILE &
+usdview $FILE &

@@ -28,7 +28,6 @@ mkdir -p $TETE
 
 # Check if the drive is already mounted
 if ! mountpoint -q $TETE; then
-    pip install --user sshfs
     sshfs tete@bournemouth.ac.uk:/home/$USERNAME $TETE -o reconnect,ServerAliveInterval=15
     echo "REBELS: Mounting TETE drive..."
 fi
@@ -51,5 +50,6 @@ alias goQube="$REBELS_SCRIPT_DIR/goQube.sh"
 
 alias goSplash="$REBELS_SCRIPT_DIR/goSplash.sh"
 alias goTeteRex="$REBELS_SCRIPT_DIR/goTeteRex.sh"
+alias goUSD="$REBELS_SCRIPT_DIR/goUSD.sh"
 
 cd $HERE

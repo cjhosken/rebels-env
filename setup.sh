@@ -1,18 +1,28 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INSTALL_DIR=$HOME/.rebels
 USERNAME=$(whoami)
 
-echo "Running script as $USERNAME"
-cd "$SCRIPT_DIR" || exit 1
+echo "REBELS: Installing scripts in $HOme/.rebels"
+git clone git@github.com:cjhosken/ncca-lab-scripts.git $INSTALL_DIR
 
-# Check for Git updates
-echo "Checking for updates..."
-if ! git pull; then
-    echo "Git pull failed. Check SSH key or network."
-    exit 1
+cd $INSTALL_DIR
+git pull
+
+
+
+echo "REBELS: Setting up .bashrc..."
+BASHRC="$HOME/.bashrc"
+
+
+touch $BASHRC
+
+SOURCE_COMMAND="source $INSTALL_DIR/source.sh"
+    
+# Check if marker exists
+if ! grep -qF "$SOURCE_COMMAND" "$BASHRC"; then
+    echo "" >> "$BASHRC"
+    echo "" >> "$BASHRC"
+    echo "# REBELS SOURCE - DO NOT MODIFY" >> "$BASHRC"
+    echo "" >> "$BASHRC"
+    echo "$SOURCE_COMMAND" >> "$BASHRC"
 fi
-
-
-
-#TODO Setup the REBELS onedrive link. (make it work on restart)
-#TODO Setup Go Scripts
-#TODO Setup Tools

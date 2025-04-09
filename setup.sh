@@ -2,17 +2,23 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_DIR=$HOME/.rebels
 USERNAME=$(whoami)
 
-echo "REBELS: Installing scripts in $HOme/.rebels"
+echo "SYSTEM: Prepping user environment..."
+# install uv
+
+python3 -m pip install -r $REBELS_SOFTWARE_DIR/teteRex/requirements.txt
+python3 -m pip install -r $REBELS_SOFTWARE_DIR/splash/requirements.txt
+
+
+
+
+echo "REBELS: Installing scripts in $HOME/.rebels"
 git clone git@github.com:cjhosken/rebels-env.git $INSTALL_DIR
 
 cd $INSTALL_DIR
 git pull
 
-
-
 echo "REBELS: Setting up .bashrc..."
 BASHRC="$HOME/.bashrc"
-
 
 touch $BASHRC
 

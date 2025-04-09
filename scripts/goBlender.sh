@@ -30,8 +30,8 @@ export LD_LIBRARY_PATH=$HOME/Autodesk/btoa/bin:$LD_LIBRARY_PATH
 # Launching
 ############################################
 
-echo "Starting Blender - this can take a few seconds..."
+echo "REBELS: Starting Blender - this can take a few seconds..."
 echo
-$HOME/software/blender-4.2.3-linux-x64/blender
+$REBELS_SOFTWARE_DIR/blender-4.2.3-linux-x64/blender
 
-echo "Blender has quit."
+echo "REBELS: Blender has quit."

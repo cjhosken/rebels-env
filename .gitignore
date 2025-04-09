@@ -1,1 +1,5 @@
-.env
+/software/blender-4.2.3-linux-x64
+/software/rclone
+/plugins/arnold
+/plugins/nuke
+/plugins/ocio

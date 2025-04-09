@@ -1,0 +1,41 @@
+global proc shelf_USD () {
+    global string $gBuffStr;
+    global string $gBuffStr0;
+    global string $gBuffStr1;
+
+
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Open the USDView for the selected USD Stage." 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "USDView" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -overlayLabelColor 0 0.2993 1 
+        -overlayLabelBackColor 0 0 0 1 
+        -image "camera.svg" 
+        -image1 "camera.svg" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import maya.cmds as cmds\nimport ufe\nfrom pxr import Usd\nimport mayaUsd as mu\nimport os\nimport sys\nimport subprocess\n\ndef show_warning(message, title=\"Warning\"):\n    \"\"\"Show a warning popup instead of raising an error.\"\"\"\n    cmds.warning(message)  # Still log to script editor\n    cmds.confirmDialog(title=title, message=message, button=[\"OK\"], icon=\"warning\")\n\ndef get_valid_stage(ufe_item):\n    \"\"\"Get the first valid USD stage from the selected UFE item or its children.\"\"\"\n    stage = mu.ufe.getStage(ufe.PathString.string(ufe_item.path()))\n    if stage is not None:\n        return stage\n\n    selected_name = str(ufe_item.path()).strip(\"|\").split(\"|\")[-1]\n    children = cmds.listRelatives(selected_name, children=True) or []\n    \n    for child in children:\n        child_path = f\"{ufe_item.path()}|{child}\"\n        child_stage = mu.ufe.getStage(child_path)\n        if child_stage is not None:\n            cmds.warning(f\"Found USD stage in child: {child}\")\n            return child_stage\n    \n    show_warning(\"No valid USD stage found in selection or its children!\")\n    return None\n\ndef get_mayapy_path():\n    \"\"\"Get mayapy executable path (Maya 2025+ uses Python 3).\"\"\"\n    return os.path.join(os.environ[\"MAYA_LOCATION\"], \"bin\", \"mayapy\")\n\ndef launch_usdview(stage_path):\n    \"\"\"Launch usdview with proper environment setup.\"\"\"\n    mayapy_path = get_mayapy_path()\n    usd_root = os.environ[\"USD_LOCATION\"]\n    usd_view = os.path.join(usd_root, \"bin\", \"usdview\")\n    \n    # Ensure PyOpenGL is available\n    try:\n        import OpenGL\n    except ImportError:\n        subprocess.check_call([mayapy_path, \"-m\", \"pip\", \"install\", \"PyOpenGL==3.1.0\"])\n    \n    # Platform-specific flags\n    creation_flags = 0x08000000 if sys.platform == \"win32\" else 0\n    \n    cmd = [mayapy_path, usd_view, stage_path]\n    cmds.warning(f\"Launching: {' '.join(cmd)}\")\n    subprocess.Popen(cmd, creationflags=creation_flags)\n\ndef main():\n    if ufe.GlobalSelection.get().empty():\n        show_warning(\"Please select a UFE item under a USD gateway node.\")\n        return\n    \n    ufe_item = ufe.GlobalSelection.get().back()\n    stage = get_valid_stage(ufe_item)\n    if not stage:\n        return\n    \n    root_layer = stage.GetRootLayer()\n    if not root_layer.realPath:\n        show_warning(\"Selected USD layer is anonymous (no file path).\")\n        return\n    \n    launch_usdview(root_layer.realPath.replace(\"\\\\\", \"/\"))  # Normalize path\n\nif __name__ == \"__main__\":\n    main()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+
+} 

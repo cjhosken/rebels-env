@@ -2,31 +2,21 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_DIR=$HOME/.rebels
 USERNAME=$(whoami)
 
-echo "SYSTEM: Prepping user environment..."
-# install uv
+/public/devel/24-25/bin/new_install_python.sh
 
-python3 -m pip install -r $REBELS_SOFTWARE_DIR/teteRex/requirements.txt
-python3 -m pip install -r $REBELS_SOFTWARE_DIR/splash/requirements.txt
-pip install --user sshfs
+echo "REBELS: Installing scripts in $HOME/.rebels..."
+cp -r $SCRIPT_DIR/* $INSTALL_DIR -n
 
-echo "REBELS: Installing scripts in $HOME/.rebels"
-git clone git@github.com:cjhosken/rebels-env.git $INSTALL_DIR
+echo "Installing Software dependencies..."
+
+REBELS_SOFTWARE_DIR="$INSTALL_DIR/software"
+
+uv pip install -r $REBELS_SOFTWARE_DIR/houTete/requirements.txt
+uv pip install -r $REBELS_SOFTWARE_DIR/splash/requirements.txt
 
 cd $INSTALL_DIR
 git pull
 
 echo "REBELS: Setting up .bashrc..."
-BASHRC="$HOME/.bashrc"
-
-touch $BASHRC
-
-SOURCE_COMMAND="source $INSTALL_DIR/source.sh"
-    
-# Check if marker exists
-if ! grep -qF "$SOURCE_COMMAND" "$BASHRC"; then
-    echo "" >> "$BASHRC"
-    echo "" >> "$BASHRC"
-    echo "# REBELS SOURCE - DO NOT MODIFY" >> "$BASHRC"
-    echo "" >> "$BASHRC"
-    echo "$SOURCE_COMMAND" >> "$BASHRC"
-fi
+echo '# REBELS SOURCE - DO NOT MODIFY"' >> ~/.bashrc
+echo "source ~/.rebels/source.sh" >> ~/.bashrc

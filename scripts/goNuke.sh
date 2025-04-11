@@ -10,7 +10,7 @@ export OFX_PLUGIN_PATH
 export NUKE_DISK_CACHE
 export NUKE_TEMP_DIR
 export NUKE_DISK_CACHE_GB=5
-export NUKE_PATH=$NUKE_PATH:$REBELS_PLUGIN_DIR/nuke/plugins
+export NUKE_PATH=$NUKE_PATH:/public/bapublic/jhardin/tools/nuke/plugins/:$REBELS_PLUGIN_DIR/nuke
 
 # Foundry licensing
 export foundry_LICENSE=4101@beijing.bournemouth.ac.uk

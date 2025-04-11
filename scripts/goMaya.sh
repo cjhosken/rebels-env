@@ -12,7 +12,7 @@ FILE=""
 #export OCIO=/public/bapublic/jhardin/tools/OCIO/BU_nov2024_config.ocio
 
 # Maya Environment Variables
-MAYA_VERSION=2024
+MAYA_VERSION=2023
 export AW_LOCATION=/usr/autodesk
 export MAYA_LOCATION=$AW_LOCATION/maya$MAYA_VERSION
 

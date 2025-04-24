@@ -31,10 +31,6 @@ uv pip install -r $INSTALL_DIR/tools/ComfyUI/custom_nodes/ComfyUI-Manager/requir
 git clone https://github.com/kijai/ComfyUI-Hunyuan3DWrapper.git $INSTALL_DIR/tools/ComfyUI/custom_nodes/ComfyUI-Hunyuan3DWrapper
 uv pip install -r $INSTALL_DIR/tools/ComfyUI/custom_nodes/ComfyUI-Hunyuan3DWrapper/requirements.txt
 
-# Install ComfyUI USD
-git clone https://github.com/cjhosken/ComfyUI-USD.git $INSTALL_DIR/tools/ComfyUI/custom_nodes/ComfyUI-USD
-uv pip install -r $INSTALL_DIR/tools/ComfyUI/custom_nodes/ComfyUI-USD/requirements.txt
-
 # Install Stable Diffusion
 wget https://huggingface.co/CompVis/stable-diffusion-v-1-4-original/resolve/main/sd-v1-4.ckpt -O $INSTALL_DIR/tools/ComfyUI/models/checkpoints/stablediffusion-v1-4.ckpt
 # Install HunYuan3D-2

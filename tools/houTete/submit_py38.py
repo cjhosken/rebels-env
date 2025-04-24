@@ -16,7 +16,24 @@ def main():
     
     args = parser.parse_args()
     
-    setup_command = """cd /opt/software/hfs20.5.332; source houdini_setup_bash;"""
+    setup_command = """
+    HFS="/opt/software/hfs20.5.332"
+    HFS_VERSION="20.5"
+    PYTHON_VERSION="python3.11"
+    
+    cd $HFS; source houdini_setup_bash
+    export HOUDINI_PATH=$HOUDINI_PATH:$HOME/houdini$HFS_VERSION:$HFS/houdini:/opt/sidefx_packages/SideFXLabs$HFS_VERSION
+    
+    SEARCH_PATH="$HOME/.plugins/htoa"
+    HTOA_DIR=$(ls -d $SEARCH_PATH/htoa-* 2>/dev/null | head -n 1)
+    if [ -n "$HTOA_DIR" ]; then
+        export HTOA="$HTOA_DIR"
+        export HOUDINI_PATH="$HOUDINI_PATH:$HTOA"
+    else
+        echo "Warning: HtoA plugin directory not found!" >&2
+    fi
+
+    """
             
     render_command = f"hython $HB/hrender.py -e -F QB_FRAME_NUMBER "
     

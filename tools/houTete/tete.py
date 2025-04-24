@@ -1,5 +1,8 @@
 import os, stat
 import paramiko
+import tarfile
+import requests
+from pathlib import Path
 from PySide6.QtWidgets import QMessageBox, QApplication
 
 class Tete:
@@ -7,12 +10,40 @@ class Tete:
         self.connect(username, password)
         self.app = QApplication.instance()
 
+        self.configure(arnold=True, prman=False, username=username)
+
     def connect(self, username, password):
         transport = paramiko.Transport(("tete.bournemouth.ac.uk", 22))
         transport.connect(None, username, password)
             
         self.sftp = paramiko.SFTPClient.from_transport(transport)
 
+
+    def configure(self, arnold=True, prman=False, username=os.getlogin()):
+        """
+        Configures Arnold and Renderman for Houdini
+        """
+
+        plugin_path = os.path.join("/home", username, ".plugins")
+
+        if not self.isdir(plugin_path):
+            self.sftp.mkdir(plugin_path)
+
+        if (arnold):
+            htoa_path = os.path.join(plugin_path, "htoa")
+
+            if not self.isdir(htoa_path):
+                local_htoa_path = os.path.expanduser("~/.ncca/plugins/htoa")
+
+                self.upload(local_htoa_path, htoa_path)
+
+        if (prman):
+            prman_path = os.path.join(plugin_path, "prman")
+
+            if (not self.isdir(prman_path)):
+                # Download prman
+                pass
+            
     def exists(self, remote_path=""):
         """
         Check if a file or directory exists on the remote SFTP server.

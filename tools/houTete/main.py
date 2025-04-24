@@ -1,7 +1,9 @@
 import sys
 import os
+import glob
 import paramiko
 import subprocess
+from pathlib import Path
 from tete import Tete
 from PySide6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
@@ -216,7 +218,7 @@ class DarkThemeApp(QWidget):
 
             args.extend(["--output", output_override])
 
-            cmd = ["uvx", "python@3.8", "submit_py38.py"] + args
+            cmd = ["uvx", "python@3.8", os.path.join(str(Path(__file__).parent), "submit_py38.py")] + args
 
             result = subprocess.run(
                 cmd,
@@ -256,7 +258,7 @@ def apply_dark_theme(app):
     app.setStyle("Fusion")
 
 def main():
-    houdini_python_path = "/opt/hfs20.5.332/houdini/python3.11libs"  # Linux
+    houdini_python_path = "/opt/hfs20.5.332/houdini/python3.11libs"
     sys.path.append(houdini_python_path)
 
     try:

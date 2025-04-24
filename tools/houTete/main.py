@@ -1,5 +1,8 @@
 import sys
 import os
+import paramiko
+import subprocess
+from tete import Tete
 from PySide6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QPushButton, QFileDialog, QComboBox, QSpinBox, QLineEdit, QMessageBox, QInputDialog
@@ -159,9 +162,7 @@ class DarkThemeApp(QWidget):
         rop_node = self.text_input.text()
 
         frame_range = (self.start_frame.value(), self.end_frame.value(), self.frame_step.value())
-
         cpus = self.spinbox.value()
-
         output_override = self.output_path_edit.text()
 
         if not job_name or not hou_file or not rop_node:
@@ -169,58 +170,73 @@ class DarkThemeApp(QWidget):
             return
         
         try:
+            # Get username (default to current user)
+            default_username = os.getenv('USER') or os.getenv('USERNAME') or 'user'
+            username, ok = QInputDialog.getText(self, 'Username', 'Enter username:', text=default_username)
+            if not ok or not username:
+                raise Exception("Invalid Username")
+                
+            # Get password
+            password, ok = QInputDialog.getText(self, 'Password', 'Enter password:', QLineEdit.Password)
+            if not ok or not password:
+                raise Exception("Invalid Password")
+
             print(f"""
-              Submitting job: {job_name}
-              {f"Project Folder: {project_folder}" if project_folder else ""}
-              Houdini File: {hou_file}
-              ROP Node: {rop_node}
-              Frame Range: {frame_range}
-              Number of CPU Nodes: {cpus}
-              {f"Output File Path Override: {output_override}" if output_override else ""}              
-              """)
+            Submitting job: {job_name}
+            {f"Project Folder: {project_folder}" if project_folder else ""}
+            Houdini File: {hou_file}
+            ROP Node: {rop_node}
+            Frame Range: {frame_range}
+            Number of CPU Nodes: {cpus}
+            {f"Output File Path Override: {output_override}" if output_override else ""}
+            Username: {username}              
+            """)
 
-            # Import qb
-            # Upload needed files
-
-            remote_project_folder = "/home/username" + job_name
-            remote_hou_file = remote_project_folder + "/scene.hip"
-
-            # Upload htoa and ocio
-
-            setup_command = """
-            HFS="/opt/hfs20.5.332"
-            HFS_VERSION="20.5"
-            PYTHON_VERSION="python3.11"
-            HTOA=$HOME/htoa/htoa-6.3.4.1
-            export HOUDINI_DSO_ERROR=1
-
-            # Houdiin Setup Script
-            cd $HFS
-            source houdini_setup_bash
-
-            export HOUDINI_PATH=$HOUDINI_PATH:$HOME/houdini$HFS_VERSION:$HFS/houdini:/opt/sidefx_packages/SideFXLabs$HFS_VERSION:$HTOA
-            """
-
+            remote_project_folder = os.path.join(f"/home", username, job_name)
+            remote_hou_file = hou_file.replace(project_folder, remote_project_folder)
             
-            render_command = f"hython $HB/render.py -F QB_FRAME_NUMBER "
-            render_command += f"-j {remote_project_folder} "
-            render_command += f"-d {rop_node} "
-            render_command += remote_hou_file
+            tete = Tete(username, password)
 
-            job_command = setup_command + render_command
-        
+            print("Uploading: ", project_folder, "->", remote_project_folder)
 
-            print("Houdini Command: \n\n")
-            print(job_command)
+            tete.upload(project_folder, remote_project_folder)
+            tete.close()
 
+            print("Uploaded!")
 
+            args = [
+                "--job-name", job_name,
+                "--hipfile", remote_hou_file,
+                "--project", remote_project_folder,
+                "--rop", rop_node,
+                "--frames", f"{frame_range[0]}-{frame_range[1]}x{frame_range[2]}",
+                "--username", username,
+                "--cpus", str(cpus)
+            ]
 
-            
+            args.extend(["--output", output_override])
 
-            
+            cmd = ["uvx", "python@3.8", "submit_py38.py"] + args
+
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True
+            )
+
+            if result.returncode != 0:
+                error_msg = f"Submission failed:\n{result.stderr}"
+                print(error_msg)  # Debug
+                raise Exception(error_msg)
+
+            print("Job submitted successfully!")
+            print(result.stdout)
+
         except Exception as e:
             QMessageBox.critical(self, "Error submitting Job", str(e))
-    
+            import traceback
+            traceback.print_exc()
+        
 
 def apply_dark_theme(app):
     dark_palette = QPalette()

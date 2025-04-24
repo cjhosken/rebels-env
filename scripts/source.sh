@@ -4,24 +4,21 @@ HERE=$(pwd)
 
 export DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-alias rclone="$REBELS_SOFTWARE_DIR/rclone/rclone"
+alias rclone="$DIR/../tools/rclone/rclone"
 
 REBELS_DRIVE="$HOME/REBELS"
 mkdir -p $REBELS_DRIVE
 chmod 700 "$REBELS_DRIVE"
 
-fusermount -uz $REBELS_DRIVE
-
 # Check if the drive is already mounted
-if ! mountpoint -q $REBELS_DRIVE; then
-    rclone mount REBELS: $REBELS_DRIVE \
-    --vfs-cache-mode writes \
-    --allow-other \
-    --allow-non-empty \
-    --no-modtime \
-    --daemon
-
-    echo "REBELS: Root drive is mounted at $HOME/REBELS"
+if ! mountpoint -q "$REBELS_DRIVE"; then
+    if ! rclone mount REBELS: "$REBELS_DRIVE" \
+        --vfs-cache-mode writes \
+        --allow-non-empty; then
+        echo "ERROR: Failed to mount REBELS drive" >&2
+    else
+    echo "REBELS: Root drive is mounted at $REBELS_DRIVE"
+    fi
 fi
 
 export RBL="$REBELS_DRIVE/RBL"

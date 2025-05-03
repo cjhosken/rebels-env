@@ -6,6 +6,11 @@ export DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 alias rclone="$DIR/../tools/rclone/rclone"
 
+OCIO_FILE=$(ls -d "$DIR"/../ocio/*.ocio 2>/dev/null | head -n 1)
+if [ -n "$OCIO_FILE" ]; then
+    export OCIO="$OCIO_FILE"
+fi
+
 # DRIVE MOUNTING (BROKEN)
 
 #REBELS_DRIVE="$HOME/REBELS"

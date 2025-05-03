@@ -11,10 +11,4 @@ for arg in "$@"; do
     esac
 done
 
-# Set OCIO configuration path
-OCIO_FILE=$(ls -d "$DIR"/../ocio/*.ocio 2>/dev/null | head -n 1)
-if [ -n "$OCIO_FILE" ]; then
-    export OCIO="$OCIO_FILE"
-fi
-
-goHoudini --arnold --prman --ocio $OCIO_FILE $FILE
+goHoudini --arnold --prman

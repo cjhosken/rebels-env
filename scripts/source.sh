@@ -16,4 +16,29 @@ alias rblNuke="$DIR/rblNuke.sh"
 alias rblSplash="$DIR/rblSplash.sh"
 alias rblHouTete="$DIR/rblHouTete.sh"
 
+# Setting up OneDrive
+alias rclone="$DIR/../tools/rclone/rclone"
+REBELS_ROOT="$HOME/REBELS"
+mkdir -p "$REBELS_ROOT"
+
+# First, check if the mount already exists
+if ! mountpoint -q "$REBELS_ROOT"; then 
+    echo "Mounting REBELS..."
+
+    # Mount with rclone (adjust your remote name and options as needed)
+    rclone mount REBELS: "$REBELS_ROOT" \
+        --vfs-cache-mode full \
+        --allow-other \
+        --daemon
+
+    # Verify the mount was successful
+    sleep 3  # Give it a moment to mount
+    if mountpoint -q "$REBELS_ROOT"; then
+        echo "Successfully mounted REBELS at $REBELS_ROOT"
+    else
+        echo "Failed to mount REBELS" >&2
+        exit 1
+    fi
+fi
+
 cd $HERE

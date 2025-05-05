@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=REBELS Houdini
+GenericName=REBELS Houdini
+Comment=Launch REBELS Houdini
+Exec=/bin/sh -c "$HOME/.rebels/scripts/rblHoudini.sh"
+Icon=rbl_houdini
+Terminal=false
+Type=Application
+Categories=3DGraphics;Graphics;
+StartupNotify=true
+Version=1.0

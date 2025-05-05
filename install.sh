@@ -9,12 +9,14 @@ $HOME/ncca-lab-scripts/install.sh
 rm -rf $HOME/ncca-lab-scripts
 
 echo "REBELS: Installing scripts in $HOME/.rebels..."
-mkdir -p $INSTALL_DIR/{scripts,ocio,tools}
+[ -d "$DIR" ] && cp -r $DIR/* $INSTALL_DIR -n
 
-# Copy files only if source exists
-[ -d "$DIR/scripts" ] && cp -r $DIR/scripts/* $INSTALL_DIR/scripts/ -n
-[ -d "$DIR/ocio" ] && cp -r $DIR/ocio/* $INSTALL_DIR/ocio/ -n
-[ -d "$DIR/tools" ] && cp -r $DIR/tools/* $INSTALL_DIR/tools/ -n
+chmod +x $INSTALL_DIR/scripts/*
+chmod +x $INSTALL_DIR/launchers/*
+mkdir -p ~/.icons/
+cp $INSTALL_DIR/launchers/icons/* ~/.icons/
+
+cp $INSTALL_DIR/launchers/*.desktop $HOME/.local/share/applications/
 
 uv pip install -r $INSTALL_DIR/tools/houTete/requirements.txt
 uv pip install -r $INSTALL_DIR/tools/splash/requirements.txt

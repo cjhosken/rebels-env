@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=REBELS Maya
+GenericName=REBELS Maya
+Comment=Launch REBELS Maya
+Exec=/bin/sh -c "$HOME/.rebels/scripts/rblMaya.sh"
+Icon=rbl_maya
+Terminal=false
+Type=Application
+Categories=3DGraphics;Graphics;
+StartupNotify=true
+Version=1.0

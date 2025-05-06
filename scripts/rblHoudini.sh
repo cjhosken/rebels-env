@@ -1,2 +1,6 @@
 #!/bin/bash
-~/.ncca/scripts/goHoudini.sh --arnold --prman "$@"
+
+export RBL="$REBELS_ROOT/RBL"
+
+~/.ncca/scripts/goHoudini.sh --arnold "$@"
+#~/.ncca/scripts/goHoudini.sh --arnold --prman "$@"

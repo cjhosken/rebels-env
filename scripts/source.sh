@@ -41,4 +41,6 @@ if ! mountpoint -q "$REBELS_ROOT"; then
     fi
 fi
 
+export RBL="$REBELS_ROOT/RBL"
+
 cd $HERE

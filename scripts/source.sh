@@ -19,7 +19,12 @@ alias rblHouTete="$DIR/rblHouTete.sh"
 # Setting up OneDrive
 alias rclone="$DIR/../tools/rclone/rclone"
 REBELS_ROOT="$HOME/REBELS"
-mkdir -p "$REBELS_ROOT"
+
+if [ ! -d "$REBELS_ROOT" ]; then
+    rm -rf "$REBELS_ROOT"
+    mkdir -p "$REBELS_ROOT"
+fi
+
 
 # First, check if the mount already exists
 if ! mountpoint -q "$REBELS_ROOT"; then 

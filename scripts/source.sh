@@ -20,32 +20,36 @@ alias rblHouTete="$DIR/rblHouTete.sh"
 alias rclone="$DIR/../tools/rclone/rclone"
 REBELS_ROOT="$HOME/REBELS"
 
-if [ ! -d "$REBELS_ROOT" ]; then
-    rm -rf "$REBELS_ROOT"
-    mkdir -p "$REBELS_ROOT"
+# Create directory if it doesn't exist
+if [ ! -e "$REBELS_ROOT" ]; then
+    mkdir -p "$REBELS_ROOT" || {
+        echo "Error: Failed to create directory $REBELS_ROOT" >&2
+    }
+elif [ ! -d "$REBELS_ROOT" ]; then
+    echo "Error: $REBELS_ROOT exists but is not a directory" >&2
 fi
 
-
-# First, check if the mount already exists
-if ! mountpoint -q "$REBELS_ROOT"; then 
+# Check if already mounted
+if mountpoint -q "$REBELS_ROOT"; then
+    echo "REBELS is already mounted at $REBELS_ROOT"
+else
     echo "Mounting REBELS..."
-
-    # Mount with rclone (adjust your remote name and options as needed)
-    rclone mount REBELS: "$REBELS_ROOT" \
+    if ! rclone mount REBELS: "$REBELS_ROOT" \
         --vfs-cache-mode full \
         --allow-other \
-        --daemon
+        --daemon > /dev/null 2>&1; then
+        echo "Failed to mount REBELS" >&2
+    fi
 
-    # Verify the mount was successful
-    sleep 3  # Give it a moment to mount
+    # Verify mount
+    sleep 1
     if mountpoint -q "$REBELS_ROOT"; then
         echo "Successfully mounted REBELS at $REBELS_ROOT"
     else
-        echo "Failed to mount REBELS" >&2
-        exit 1
+        echo "Mount appeared to succeed but verification failed" >&2
     fi
 fi
 
 export RBL="$REBELS_ROOT/RBL"
 
-cd $HERE
+cd "$HERE"

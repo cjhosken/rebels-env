@@ -35,9 +35,10 @@ if mountpoint -q "$REBELS_ROOT"; then
 else
     echo "Mounting REBELS..."
     if ! rclone mount REBELS: "$REBELS_ROOT" \
-        --vfs-cache-mode full \
+        --vfs-cache-mode=writes \
+        --allow-non-empty \
         --allow-other \
-        --daemon > /dev/null 2>&1; then
+        --log-level DEBUG --log-file ~/rclone.log; then
         echo "Failed to mount REBELS" >&2
     fi
 

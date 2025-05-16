@@ -1,10 +1,10 @@
-import sys
+import sys, os
 import subprocess
 import importlib
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
 from PySide6.QtCore import Qt, QTimer, QTime
-from PySide6.QtGui import QPalette, QColor, QFont, QShortcut, QPainter, QPen
+from PySide6.QtGui import QPalette, QColor, QFont, QShortcut, QPainter, QPen, QPixmap
 
 class LoaderWidget(QWidget):
     def __init__(self, accent):
@@ -92,8 +92,6 @@ class MainWindow(QMainWindow):
         self.title_text = title
         self.subtitle_text = subtitle
         self.contact_text = contact
-
-        print(self.contact_text)
         
         self.setup_ui()
 
@@ -102,7 +100,6 @@ class MainWindow(QMainWindow):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_time)
         self.timer.start(1000) 
-
 
         # Make the window full screen
         self.showFullScreen()
@@ -115,31 +112,26 @@ class MainWindow(QMainWindow):
         Add a 'RENDERING' label with white text.
         """
 
-        backgroundColor = QColor(15, 20, 35)
-        accent = QColor(215, 40, 70)
+        backgroundColor = QColor(0, 0, 0)
+        accent = QColor(240, 130, 45)
 
         palette = QPalette()
         palette.setColor(QPalette.Window, backgroundColor)  # Dark grey
         self.setPalette(palette)
         
-        title = QLabel(self.title_text, self)
-        title_font = QFont("Arial", 200, QFont.Bold)
-        title.setStyleSheet("color: white;")
-        title.setFont(title_font)
+        logo_label = QLabel(self)
+        logo_pixmap = QPixmap(os.path.join(os.path.dirname(__file__), "logo.png"))
+        logo_pixmap = logo_pixmap.scaledToWidth(500, Qt.SmoothTransformation)
+        logo_label.setPixmap(logo_pixmap)
 
-        subtitle = QLabel(self.subtitle_text, self)
-        subtitle_font = QFont("Arial", 50, QFont.Thin)
-        subtitle.setStyleSheet("color: white;")
-        subtitle.setFont(subtitle_font)
+        title_label = QLabel(f"RENDERING FOR REBELS | DO NOT TOUCH", self)
+        title_font = QFont("Titillium Web", 50, QFont.Thin)
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setStyleSheet("color: white;")
+        title_label.setFont(title_font)
 
-        if (self.contact_text):
-            info = QLabel(f"Contact: {self.contact_text}", self)
-            info_font = QFont("Arial", 25, QFont.Thin)
-            info.setStyleSheet("color: white;")
-            info.setFont(info_font)
-
-        self.time_label = QLabel("Time Elapsed: 00:00:00", self)
-        self.time_label.setFont(QFont("Arial", 20))
+        self.time_label = QLabel("TIME ELAPSED: 00:00:00", self)
+        self.time_label.setFont(QFont("Titillium Web", 20))
         self.time_label.setStyleSheet("color: white;")
         self.time_label.setAlignment(Qt.AlignCenter)
 
@@ -150,11 +142,19 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(central_widget)
         layout.addStretch()
 
-        layout.addWidget(title, alignment=Qt.AlignCenter)
-        layout.addWidget(subtitle, alignment=Qt.AlignCenter)
+        layout.addWidget(logo_label, alignment=Qt.AlignCenter)
+        layout.addStretch()
+        layout.addWidget(title_label, alignment=Qt.AlignCenter)
         layout.addStretch()
         layout.addWidget(self.time_label, alignment=Qt.AlignCenter)
         layout.addWidget(loading_circle, alignment=Qt.AlignCenter)
+
+        if (self.contact_text):
+            info = QLabel(f"{os.getlogin()}@bournemouth.ac.uk", self)
+            info_font = QFont("Titillium Web", 25, QFont.Thin)
+            info.setAlignment(Qt.AlignCenter)
+            info.setStyleSheet("color: white;")
+            info.setFont(info_font)
 
         if (self.contact_text):
             layout.addWidget(info, alignment=Qt.AlignCenter)
@@ -189,7 +189,7 @@ def main():
     if len(sys.argv) < 4 or "-h" in sys.argv or "--help" in sys.argv:
         print("Usage: python script.py <title_text> <subtitle_text> <contact_info>")
         sys.exit(1)
-
+    
     title_text = sys.argv[1]  # First argument is the title text
     subtitle_text = sys.argv[2]  # Second argument is the subtitle text
     contact_text = sys.argv[3]  # Third argument is the contact text

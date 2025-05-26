@@ -34,13 +34,11 @@ if mountpoint -q "$REBELS_ROOT"; then
     echo "REBELS is already mounted at $REBELS_ROOT"
 else
     echo "Mounting REBELS..."
-    if ! rclone mount REBELS: "$REBELS_ROOT" \
+    nohup rclone mount REBELS: "$REBELS_ROOT" \
         --vfs-cache-mode=writes \
         --allow-non-empty \
         --allow-other \
-        --log-level DEBUG --log-file ~/rclone.log; then
-        echo "Failed to mount REBELS" >&2
-    fi
+        --log-level DEBUG --log-file ~/rclone.log >/dev/null 2>&1 &
 
     # Verify mount
     sleep 1

@@ -1,9 +1,8 @@
 #!/bin/bash
 export RBL="$HOME/REBELS/RBL"
 export HFS="/opt/hfs20.5.332"
-export SIDEFX_LABS="/opt/sidefx_packages/SideFXLabs20.5"
-export HOUDINI_OTLSCAN_PATH="$RBL/05_pipeline/tools/houdini/otls:$HFS/houdini/otls:$HFS/packages/apex/otls:$HFS/packages/kinefx/otls:$HFS/packages/sculpt/otls:$SIDEFX_LABS/otls:$HOUDINI_OTLSCAN_PATH"
-export HOUDINI_TOOLBAR_PATH="$RBL/05_pipeline/tools/houdini/shelves:$HOME/houdini20.5/toolbar:$HFS/houdini/toolbar:$HFS/packages/apex/toolbar:$HFS/packages/kinefx/toolbar:$HFS/packages/sculpt/toolbar:$SIDEFX_LABS/toolbar:$HOUDINI_TOOLBAR_PATH"
+export HOUDINI_USER_PREF_DIR="$RBL/05_pipeline/tools/houdini20.5"
+export HOUDINI_PATH=$HOUDINI_USER_PREF_DIR:$HOUDINI_PATH
 
 ~/.ncca/scripts/goHoudini.sh --arnold "$@"
 #~/.ncca/scripts/goHoudini.sh --arnold --prman "$@"
